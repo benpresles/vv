@@ -6,7 +6,41 @@ include("${ITK_USE_FILE}")
 
 #=========================================================
 # Find VTK (required)
-find_package(VTK 9.5 REQUIRED)
+find_package(VTK 9.5 REQUIRED COMPONENTS
+  ChartsCore
+  CommonCore
+  CommonDataModel
+  CommonExecutionModel
+  CommonMath
+  CommonMisc
+  CommonTransforms
+  FiltersCore
+  FiltersGeneral
+  FiltersHybrid
+  FiltersModeling
+  FiltersSources
+  GUISupportQt
+  ImagingColor
+  ImagingCore
+  ImagingMath
+  ImagingMorphological
+  ImagingStatistics
+  ImagingStencil
+  InteractionImage
+  InteractionStyle
+  IOCore
+  IOGeometry
+  IOImage
+  IOLegacy
+  IOMovie
+  IOXML
+  RenderingAnnotation
+  RenderingContext2D
+  RenderingCore
+  RenderingLOD
+  RenderingOpenGL2
+  ViewsContext2D
+)
 #========================================================
 
 #=========================================================

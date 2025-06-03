@@ -1,6 +1,6 @@
 #=========================================================
 # CLITK = Command Line ITK
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.21)
 project(clitk)
 
 if(NOT DEFINED CLITK_SOURCE_DIR)

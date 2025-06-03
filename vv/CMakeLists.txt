@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.21)
 
 option(CLITK_USE_PACS_CONNECTION "USE PACS CONNECTION" OFF)
 
@@ -259,7 +259,7 @@ if(APPLE)
 endif()
 #=========================================================
 #Create binary and libs for tests
-set(vvExternalLibs clitkSegmentationGgoLib ${toolLibs} ${foundationLibraries} ${vvCxImage} ${QT_LIBRARIES} ${APPLE_FRAMEWORKS})
+set(vvExternalLibs clitkSegmentationGgoLib ${toolLibs} ${foundationLibraries} ${vvCxImage} Qt6::Widgets Qt6::Network Qt6::Designer ${APPLE_FRAMEWORKS})
 
 #-----------------------------------------------------------------------------
 # For retina displays, see
