@@ -194,7 +194,7 @@ void AddToRecentlyOpenedImages(std::string filename)
   settings.beginGroup(QString::fromStdString(recentFileList));
     int index=0;
     for (FileListType::iterator j = file_list.begin() ; j != file_list.end() ; j++){
-      QString s=QString(index++);
+      QString s=QString::number(index++);
       settings.setValue(s, QString::fromStdString ( *j ));
     }
   settings.endGroup();

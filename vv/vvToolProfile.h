@@ -52,7 +52,7 @@ class vvToolProfile:
 {
   Q_OBJECT
     public:
-  vvToolProfile(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolProfile(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolProfile();
 
   //-----------------------------------------------------

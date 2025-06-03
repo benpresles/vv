@@ -48,7 +48,7 @@ class vvToolResample :
     
   public:
   // constructor - destructor
-  vvToolResample(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolResample(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
 
   // Get output result
   vvImage::Pointer GetOutput() {

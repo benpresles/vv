@@ -67,7 +67,7 @@ class vvToolMIP:
 {
   Q_OBJECT	
   public:
-    vvToolMIP(vvMainWindowBase* parent=0, Qt::WindowFlags f=0);
+    vvToolMIP(vvMainWindowBase* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
     ~vvToolMIP();
 
     static void Initialize();

@@ -43,7 +43,7 @@ class vvToolCropImage:
 {
   Q_OBJECT
     public:
-  vvToolCropImage(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolCropImage(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolCropImage();
 
   virtual void InputIsSelected(vvSlicerManager *m);

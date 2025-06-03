@@ -35,7 +35,7 @@ class vvToolFoo:
 {
   Q_OBJECT
     public:
-  vvToolFoo(vvMainWindowBase* parent=0, Qt::WindowFlags f=0);
+  vvToolFoo(vvMainWindowBase* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolFoo();
 
   static void Initialize();

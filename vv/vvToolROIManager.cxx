@@ -671,7 +671,7 @@ void vvToolROIManager::SelectedItemChangedInTree()
                           (1-mCurrentROI->GetDisplayColor()[1])*255,
                           (1-mCurrentROI->GetDisplayColor()[2])*255);
   palette->setColor(QPalette::WindowText,colorFG);
-  palette->setColor(QPalette::Background, color);
+  palette->setColor(QPalette::Base, color);
   mROInameLabel->setPalette(*palette);
 
   // Enable the group box (in case no selection before)

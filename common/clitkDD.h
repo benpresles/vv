@@ -28,7 +28,7 @@
 # define DD(a) { \
     std::ostringstream ossDD; \
     ossDD << #a " = [ " << a << " ]" << std::endl; \
-    OutputDebugString(ossDD.str().c_str()); \
+    OutputDebugStringA(ossDD.str().c_str()); \
     std::cout << ossDD.str() << std::endl; \
   }
 #else

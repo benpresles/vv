@@ -42,7 +42,7 @@ class vvSurfaceViewerDialog : public QDialog, private Ui::vvSurfaceViewerDialog 
 
 public:
     // constructor - destructor
-    vvSurfaceViewerDialog(QWidget * parent=0, Qt::WindowFlags f=0);
+    vvSurfaceViewerDialog(QWidget * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
     ~vvSurfaceViewerDialog();
     void NextTime();
     void PreviousTime();

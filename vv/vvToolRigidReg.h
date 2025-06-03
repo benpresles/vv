@@ -32,7 +32,7 @@ class vvToolRigidReg:
 {
   Q_OBJECT
 public:
-  vvToolRigidReg(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolRigidReg(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolRigidReg();
   static void Initialize();
   virtual void InputIsSelected(vvSlicerManager *input);

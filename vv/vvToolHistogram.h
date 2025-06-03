@@ -50,7 +50,7 @@ class vvToolHistogram:
 {
   Q_OBJECT
     public:
-  vvToolHistogram(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolHistogram(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolHistogram();
 
   //-----------------------------------------------------

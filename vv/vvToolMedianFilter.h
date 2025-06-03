@@ -67,7 +67,7 @@
   {
       Q_OBJECT	
   public:
-      vvToolMedianFilter(vvMainWindowBase* parent=0, Qt::WindowFlags f=0);
+      vvToolMedianFilter(vvMainWindowBase* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
       ~vvToolMedianFilter();
 
       static void Initialize();

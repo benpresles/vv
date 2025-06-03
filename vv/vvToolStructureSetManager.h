@@ -42,7 +42,7 @@ class vvToolStructureSetManager:
 {
   Q_OBJECT
   public:
-  vvToolStructureSetManager(vvMainWindowBase* parent=0, Qt::WindowFlags f=0, vvSlicerManager * c = NULL);
+  vvToolStructureSetManager(vvMainWindowBase* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{}, vvSlicerManager * c = NULL);
   virtual ~vvToolStructureSetManager();
 
   static void Initialize();

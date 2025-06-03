@@ -34,7 +34,7 @@ class vvToolTest:
 {
   Q_OBJECT
     public:
-  vvToolTest(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolTest(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolTest();
 
   //-----------------------------------------------------

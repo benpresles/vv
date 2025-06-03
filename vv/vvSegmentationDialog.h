@@ -51,7 +51,7 @@ class vvSegmentationDialog : public QDialog, private Ui::vvSegmentationDialog {
 
 public:
     // constructor - destructor
-    vvSegmentationDialog(QWidget * parent=0, Qt::WindowFlags f=0);
+    vvSegmentationDialog(QWidget * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
     ~vvSegmentationDialog();
     void SetImage(vvImage::Pointer image);
 

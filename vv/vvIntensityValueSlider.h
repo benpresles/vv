@@ -40,7 +40,7 @@ class vvIntensityValueSlider:
   public QWidget, private Ui::vvIntensityValueSlider {
   Q_OBJECT
     public:
-  vvIntensityValueSlider(QWidget * parent=0, Qt::WindowFlags f=0);
+  vvIntensityValueSlider(QWidget * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvIntensityValueSlider();
 
   void SetText(QString t);

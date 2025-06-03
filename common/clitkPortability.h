@@ -22,11 +22,6 @@
 #endif
 #include <cmath>
 
-#if defined(_WIN32)
-#  define rint(x)  floor(x+0.5)
-#  define lrint(x) (long)rint(x) 
-#endif
-
 template<typename T>
 int IsNormal(const T val) {
 #if defined(_MSC_VER)

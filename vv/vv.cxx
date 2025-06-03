@@ -25,7 +25,6 @@
 #include <QPixmap>
 #include <QSplashScreen>
 #include <QTimer>
-#include <QDesktopWidget>
 #include <QDir>
 
 #if VTK_MAJOR_VERSION > 5
@@ -42,12 +41,9 @@
 #include "vvReadState.h"
 #include "vvToolsList.h"
 #include "vvConfiguration.h"
-#if (VTK_MAJOR_VERSION == 8 && VTK_MINOR_VERSION >= 2) || VTK_MAJOR_VERSION >= 9
-#include <QVTKOpenGLWidget.h>
-#endif
-
 #include <vtkFileOutputWindow.h>
 #include <vtkSmartPointer.h>
+#include <QVTKOpenGLNativeWidget.h>
 
 #include <itkFileOutputWindow.h>
 #include <itkSmartPointer.h>
@@ -119,7 +115,7 @@ int main( int argc, char** argv )
 #endif
 
 #if (VTK_MAJOR_VERSION == 8 && VTK_MINOR_VERSION >= 2) || VTK_MAJOR_VERSION >= 9
-  QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
+  QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
 #endif
   CLITK_INIT;
 
@@ -144,14 +140,6 @@ int main( int argc, char** argv )
 #endif
 
   vvMainWindow window;
-
-  //Try to give the window a sensible default size
-  int width=QApplication::desktop()->width()*0.8;
-  int height=QApplication::desktop()->height()*0.9;
-  if (width> 1.5*height)
-    width=1.5*height;
-  window.resize(width,height);
-
   window.show();
 
   std::vector<std::string> sequence_filenames;

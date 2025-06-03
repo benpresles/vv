@@ -57,6 +57,7 @@ endif(CLITK_PRIVATE_FEATURES)
 
 ### Declare clitkCommon library
 add_library(clitkCommon STATIC ${clitkCommon_SRC})
+target_compile_features(clitkCommon PRIVATE cxx_std_11)
 
 if(CLITK_MEMORY_INFO)
   target_link_libraries(clitkCommon statgrab)
@@ -71,7 +72,8 @@ if(CLITK_USE_SYSTEM_GDCM)
 endif()
 #=========================================================
 
-target_link_libraries(clitkCommon ${VTK_LIBRARIES} ${ITK_LIBRARIES})
+target_link_libraries(clitkCommon ${ITK_LIBRARIES})
+target_link_libraries(clitkCommon VTK::IOLegacy VTK::IOXML VTK::ImagingStencil VTK::FiltersModeling)
 
 add_library(clitkDicomRTStruct STATIC
   clitkDicomRT_Contour.cxx

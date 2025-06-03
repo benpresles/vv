@@ -31,17 +31,7 @@ option(CLITK_BUILD_REGISTRATION "Build command-line registration tools" OFF)
 option(CLITK_BUILD_VV "Build vv the 4D visualizer (requires VTK and QT)" ON)
 
 if(CLITK_BUILD_VV)
- if(VTK_VERSION VERSION_LESS 6.0.0)
-    set(vv_QT_VERSION "4" CACHE INTERNAL "Expected Qt version")
- else()
-    if(VTK_QT_VERSION VERSION_LESS 5)
-       set(vv_QT_VERSION "4" CACHE INTERNAL "Expected Qt version")
-    else()
-       set(vv_QT_VERSION "5" CACHE INTERNAL "Expected Qt version")
-    endif()
- endif()
-  set(vv_QT_VERSION "5" CACHE INTERNAL "Expected Qt version")
-  add_subdirectory(${CLITK_SOURCE_DIR}/vv ${PROJECT_BINARY_DIR}/vv)
+   add_subdirectory(${CLITK_SOURCE_DIR}/vv ${PROJECT_BINARY_DIR}/vv)
 endif(CLITK_BUILD_VV)
 
 #=========================================================

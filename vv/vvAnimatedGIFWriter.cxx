@@ -11,6 +11,7 @@
 #include <vtkObjectFactory.h>
 #include <vtkLookupTable.h>
 
+#undef _UNICODE
 #include "ximagif.h"
 
 //---------------------------------------------------------------------------

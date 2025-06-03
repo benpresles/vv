@@ -39,7 +39,7 @@ class vvToolPlastimatch:
 {
   Q_OBJECT
     public:
-  vvToolPlastimatch(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolPlastimatch(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolPlastimatch();
 
   //-----------------------------------------------------

@@ -39,7 +39,7 @@ class vvLabelImageLoaderWidget: public QWidget, private Ui::vvLabelImageLoaderWi
 {
   Q_OBJECT
     public:
-  vvLabelImageLoaderWidget(QWidget * parent=0, Qt::WindowFlags f=0);
+  vvLabelImageLoaderWidget(QWidget * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvLabelImageLoaderWidget() {}
 
   vvImage::Pointer GetImage();

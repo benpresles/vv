@@ -40,7 +40,7 @@ class vvToolBinarize:
 {
   Q_OBJECT
     public:
-  vvToolBinarize(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolBinarize(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolBinarize();
 
   //-----------------------------------------------------

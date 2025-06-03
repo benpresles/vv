@@ -904,7 +904,7 @@ void vvMainWindow::LoadImages(std::vector<std::string> files, vvImageReader::Loa
   //Only add to the list of recently opened files when a single file is opened,
   //to avoid polluting the list of recently opened files
   if (files.size() == 1) {
-    QFileInfo finfo=tr(files[0].c_str());
+    QFileInfo finfo(tr(files[0].c_str()));
     AddToRecentlyOpenedImages(finfo.absoluteFilePath().toStdString());
     updateRecentlyOpenedFilesMenu(GetRecentlyOpenedImages());
   }
@@ -1571,10 +1571,10 @@ void vvMainWindow::InitSlicers()
 { 
   if (mSlicerManagers.size()) {
     mSlicerManagers.back()->GenerateDefaultLookupTable();
-    mSlicerManagers.back()->SetSlicerWindow(0,NOViewWidget->GetRenderWindow());
-    mSlicerManagers.back()->SetSlicerWindow(1,NEViewWidget->GetRenderWindow());
-    mSlicerManagers.back()->SetSlicerWindow(2,SOViewWidget->GetRenderWindow());
-    mSlicerManagers.back()->SetSlicerWindow(3,SEViewWidget->GetRenderWindow());
+    mSlicerManagers.back()->SetSlicerWindow(0,NOViewWidget->renderWindow());
+    mSlicerManagers.back()->SetSlicerWindow(1,NEViewWidget->renderWindow());
+    mSlicerManagers.back()->SetSlicerWindow(2,SOViewWidget->renderWindow());
+    mSlicerManagers.back()->SetSlicerWindow(3,SEViewWidget->renderWindow());
 #if VTK_MAJOR_VERSION <= 5
     mSlicerManagers.back()->Render(); // SR: displayed #slice is wrong without this / TB: With VTK6 and multiple images, all slicers are updated, not only the first
 #endif
@@ -1654,7 +1654,7 @@ void vvMainWindow::CloseImage(QTreeWidgetItem* item, int column)
     QString warning = "Do you really want to close the overlay : ";
     warning += item->data(COLUMN_IMAGE_NAME,Qt::DisplayRole).toString();
     QMessageBox msgBox(QMessageBox::Warning, tr("Close Overlay"),
-      warning, 0, this);
+      warning, QMessageBox::NoButton, this);
     msgBox.addButton(tr("Close"), QMessageBox::AcceptRole);
     msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
     if (msgBox.exec() == QMessageBox::AcceptRole) {
@@ -1691,7 +1691,7 @@ void vvMainWindow::CloseImage(QTreeWidgetItem* item, int column)
     warning += item->data(COLUMN_IMAGE_NAME,Qt::DisplayRole).toString();
     warning += "\nThis is the last image, you're about to close vv !!!";
     QMessageBox msgBox(QMessageBox::Warning, tr("Close Image"),
-      warning, 0, this);
+      warning, QMessageBox::NoButton, this);
     msgBox.addButton(tr("Close vv"), QMessageBox::AcceptRole);
     msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
     if (msgBox.exec() == QMessageBox::AcceptRole) {
@@ -1701,7 +1701,7 @@ void vvMainWindow::CloseImage(QTreeWidgetItem* item, int column)
     QString warning = "Do you really want to close the image : ";
     warning += item->data(COLUMN_IMAGE_NAME,Qt::DisplayRole).toString();
     QMessageBox msgBox(QMessageBox::Warning, tr("Close Image"),
-      warning, 0, this);
+      warning, QMessageBox::NoButton, this);
     msgBox.addButton(tr("Close"), QMessageBox::AcceptRole);
     msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
     if (msgBox.exec() == QMessageBox::AcceptRole) {
@@ -2901,7 +2901,7 @@ void vvMainWindow::SaveAs()
           }
           if( !bId ) {
             QString warning = "The image has an associated linear transform. Do you want to save it along?";
-            QMessageBox msgBox(QMessageBox::Warning, tr("Save transform"), warning, 0, this);
+            QMessageBox msgBox(QMessageBox::Warning, tr("Save transform"), warning, QMessageBox::NoButton, this);
             msgBox.addButton(tr("Yes"), QMessageBox::AcceptRole);
             msgBox.addButton(tr("No"), QMessageBox::RejectRole);
             if (msgBox.exec() == QMessageBox::AcceptRole)
@@ -3347,7 +3347,7 @@ void vvMainWindow::SaveScreenshotAllSlices()
   vvSlicer * slicer = SM->GetSlicer(0);
   int orientation = slicer->GetOrientation();
   int nbSlices = image->GetSize()[orientation];
-  vtkSmartPointer<vtkRenderWindow>  renderWindow = widget->GetRenderWindow();
+  vtkSmartPointer<vtkRenderWindow>  renderWindow = widget->renderWindow();
 
   // Select filename base
   QString filename = QFileDialog::getSaveFileName(this,
@@ -3360,7 +3360,7 @@ void vvMainWindow::SaveScreenshotAllSlices()
     // Change the slice
     slicer->SetSlice(i); // -> change the slice of the current slicer
     SM->UpdateSlice(0); // --> this one emit UpdateSlice
-    QCoreApplication::flush(); // -> needed to force display of contours
+    QCoreApplication::processEvents(); // -> needed to force display of contours
 
     // Screenshot
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
@@ -3422,7 +3422,7 @@ void vvMainWindow::SaveScreenshot(QVTKWidget *widget)
 
   if (!fileName.isEmpty()) {
     vtkSmartPointer<vtkWindowToImageFilter> w2i = vtkSmartPointer<vtkWindowToImageFilter>::New();
-    w2i->SetInput(widget->GetRenderWindow());
+    w2i->SetInput(widget->renderWindow());
 #if (VTK_MAJOR_VERSION >= 8 && VTK_MINOR_VERSION >= 2) || VTK_MAJOR_VERSION >= 9
     w2i->SetScale(1);
 #else
@@ -3480,7 +3480,7 @@ void vvMainWindow::SaveScreenshot(QVTKWidget *widget)
 
       // Dithering
       QString msg = "Would you like to activate dithering?";
-      QMessageBox msgBox(QMessageBox::Question, tr("Dithering"),msg, 0, this);
+      QMessageBox msgBox(QMessageBox::Question, tr("Dithering"),msg, QMessageBox::NoButton, this);
       msgBox.addButton(tr("Yes"), QMessageBox::AcceptRole);
       msgBox.addButton(tr("No"), QMessageBox::RejectRole);
       gif->SetDither(msgBox.exec() == QMessageBox::AcceptRole);
@@ -3532,7 +3532,7 @@ void vvMainWindow::SaveScreenshot(QVTKWidget *widget)
       for(int i=0; i<=nSlice; i++) {
         mSlicerManagers[smIndex]->SetNextTSlice(0);
         vtkSmartPointer<vtkWindowToImageFilter> w2i = vtkSmartPointer<vtkWindowToImageFilter>::New();
-        w2i->SetInput(widget->GetRenderWindow());
+        w2i->SetInput(widget->renderWindow());
         w2i->Update();
 #if VTK_MAJOR_VERSION <= 5
         vidwriter->SetInput(w2i->GetOutput());
@@ -3649,10 +3649,10 @@ void vvMainWindow::UpdateRenderWindows()
         mSlicerManagers[i]->GetSlicer(j)->DisplayLandmarks();
       }
   }
-  if (NOViewWidget->GetRenderWindow()) NOViewWidget->GetRenderWindow()->Render();
-  if (NEViewWidget->GetRenderWindow()) NEViewWidget->GetRenderWindow()->Render();
-  if (SOViewWidget->GetRenderWindow()) SOViewWidget->GetRenderWindow()->Render();
-  if (SEViewWidget->GetRenderWindow()) SEViewWidget->GetRenderWindow()->Render();
+  if (NOViewWidget->renderWindow()) NOViewWidget->renderWindow()->Render();
+  if (NEViewWidget->renderWindow()) NEViewWidget->renderWindow()->Render();
+  if (SOViewWidget->renderWindow()) SOViewWidget->renderWindow()->Render();
+  if (SEViewWidget->renderWindow()) SEViewWidget->renderWindow()->Render();
 }
 //------------------------------------------------------------------------------
 

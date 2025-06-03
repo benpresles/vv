@@ -38,7 +38,7 @@ class vvToolImageArithm:
 {
   Q_OBJECT
     public:
-  vvToolImageArithm(vvMainWindowBase* parent=0, Qt::WindowFlags f=0);
+  vvToolImageArithm(vvMainWindowBase* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolImageArithm();
 
   static void Initialize();

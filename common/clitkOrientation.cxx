@@ -77,15 +77,15 @@ bool clitk::CheckOrientation(itk::SpatialOrientation::CoordinateTerms a,
 //====================================================================
 itk::SpatialOrientation::ValidCoordinateOrientationFlags clitk::GetOrientation(char a, char b, char c)
 {
-  itk::SpatialOrientation::CoordinateTerms f1 = clitk::GetOrientation(a);
-  itk::SpatialOrientation::CoordinateTerms f2 = clitk::GetOrientation(b);
-  itk::SpatialOrientation::CoordinateTerms f3 = clitk::GetOrientation(c);
+  auto f1 = clitk::GetOrientation(a);
+  auto f2 = clitk::GetOrientation(b);
+  auto f3 = clitk::GetOrientation(c);
 
   if (CheckOrientation(f1, f2) && CheckOrientation(f2,f3) && CheckOrientation(f1,f3)) {
     return static_cast<itk::SpatialOrientation::ValidCoordinateOrientationFlags>(
-             (f1     << itk::SpatialOrientation::ITK_COORDINATE_PrimaryMinor)
-             + (f2  << itk::SpatialOrientation::ITK_COORDINATE_SecondaryMinor)
-             + (f3 << itk::SpatialOrientation::ITK_COORDINATE_TertiaryMinor));
+          (static_cast<uint32_t>(f1) << static_cast<uint32_t>(itk::SpatialOrientation::ITK_COORDINATE_PrimaryMinor))
+        + (static_cast<uint32_t>(f2) << static_cast<uint32_t>(itk::SpatialOrientation::ITK_COORDINATE_SecondaryMinor))
+        + (static_cast<uint32_t>(f3) << static_cast<uint32_t>(itk::SpatialOrientation::ITK_COORDINATE_TertiaryMinor)));
   }
   std::cerr <<"I don't know the orientation '" << a << b << c
             << "'. Valid letters are LR/AP/IS (or in lowercase)" << std::endl;
@@ -106,9 +106,10 @@ itk::SpatialOrientation::ValidCoordinateOrientationFlags clitk::GetOrientation(c
 //====================================================================
 itk::SpatialOrientation::CoordinateTerms clitk::GetOrientation(const int i, const itk::SpatialOrientation::ValidCoordinateOrientationFlags orient)
 {
-  if (i==0) return static_cast<itk::SpatialOrientation::CoordinateTerms>((orient << 24) >> 24);
-  if (i==1) return static_cast<itk::SpatialOrientation::CoordinateTerms>((orient << 16) >> 24);
-  if (i==2) return static_cast<itk::SpatialOrientation::CoordinateTerms>(orient >> 16);
+  auto orientValue = static_cast<uint8_t>(orient);
+  if (i==0) return static_cast<itk::SpatialOrientation::CoordinateTerms>((orientValue << 24) >> 24);
+  if (i==1) return static_cast<itk::SpatialOrientation::CoordinateTerms>((orientValue << 16) >> 24);
+  if (i==2) return static_cast<itk::SpatialOrientation::CoordinateTerms>(orientValue >> 16);
   std::cerr <<"Invalid index = " << i << " in GetOrientation" << std::endl;
   exit(0);
 }
@@ -119,21 +120,21 @@ int clitk::WhereIsDimInThisOrientation(const int dim, const itk::SpatialOrientat
 {
   if (dim ==0) {
     for(int i=0; i<3; i++) {
-      int j = GetOrientation(i, flag);
+      auto j = GetOrientation(i, flag);
       if ((j == itk::SpatialOrientation::ITK_COORDINATE_Right) ||
           (j == itk::SpatialOrientation::ITK_COORDINATE_Left)) return i;
     }
   }
   if (dim ==1) {
     for(int i=0; i<3; i++) {
-      int j = GetOrientation(i, flag);
+      auto j = GetOrientation(i, flag);
       if ((j == itk::SpatialOrientation::ITK_COORDINATE_Anterior) ||
           (j == itk::SpatialOrientation::ITK_COORDINATE_Posterior)) return i;
     }
   }
   if (dim ==2) {
     for(int i=0; i<3; i++) {
-      int j = GetOrientation(i, flag);
+      auto j = GetOrientation(i, flag);
       if ((j == itk::SpatialOrientation::ITK_COORDINATE_Superior) ||
           (j == itk::SpatialOrientation::ITK_COORDINATE_Inferior)) return i;
     }

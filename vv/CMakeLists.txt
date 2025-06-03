@@ -1,19 +1,6 @@
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 3.28)
 
-#=========================================================
-# To avoid warning with some version
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-  cmake_policy(SET CMP0007 NEW)
-endif(COMMAND cmake_policy)
-#=========================================================
-OPTION(CLITK_USE_PACS_CONNECTION "USE PACS CONNECTION"       OFF)
-#=========================================================
-
-# Look for OpenGL2 version
-if (VTK_RENDERING_BACKEND STREQUAL "OpenGL2")
-  add_definitions(-DVTK_OPENGL2)
-endif ()
+option(CLITK_USE_PACS_CONNECTION "USE PACS CONNECTION" OFF)
 
 #List of vv tools to compile
 set(vv_TOOLS
@@ -123,73 +110,31 @@ set(vv_SRCS
   vvToolBaseBase.cxx
 )
 
-#=========================================================
+# =========================================================
 # Qt related commands
-if(vv_QT_VERSION VERSION_GREATER "4")
-  find_package(Qt5Widgets REQUIRED)
-  find_package(Qt5Network REQUIRED)
-  find_package(Qt5Designer REQUIRED)
-else()
-  find_package(Qt4 REQUIRED)
-endif()
+find_package(Qt6 REQUIRED COMPONENTS Widgets Network Designer)
 
-if(vv_QT_VERSION VERSION_GREATER "4")
-  link_directories(${QT5Widgets_LIBRARIES})
-  link_directories(${QT5Network_LIBRARIES})
-  link_directories(${QT5Designer_LIBRARIES})
-else()
-  link_directories(${QT_LIBRARY_DIR})
-endif()
+qt_wrap_cpp(vv_SRCS
+  vvMainWindowBase.h
+  QTreePushButton.h
+  vvDocumentation.h
+  vvHelpDialog.h
+  vvQDicomSeriesSelector.h
+  vvSlicerManager.h
+  vvSlicer.h
+  vvStructureSetActor.h
+  vvROIActor.h
+  vvToolCreatorBase.h
+)
 
-if(vv_QT_VERSION VERSION_GREATER "4")
-  qt5_wrap_cpp(vv_SRCS
-    vvMainWindowBase.h
-    QTreePushButton.h
-    vvDocumentation.h
-    vvHelpDialog.h
-    vvQDicomSeriesSelector.h
-    vvSlicerManager.h
-    vvSlicer.h
-    vvStructureSetActor.h
-    vvROIActor.h
-    vvToolCreatorBase.h
-    )
-else()
-  QT4_WRAP_CPP(vv_SRCS
-    vvMainWindowBase.h
-    QTreePushButton.h
-    vvDocumentation.h
-    vvHelpDialog.h
-    vvQDicomSeriesSelector.h
-    vvSlicerManager.h
-    vvSlicer.h
-    vvStructureSetActor.h
-    vvROIActor.h
-    vvToolCreatorBase.h
-    )
-endif()
+qt_wrap_ui(vv_UI_CXX
+  qt_ui/vvHelpDialog.ui
+  qt_ui/vvDocumentation.ui
+  qt_ui/vvDicomSeriesSelector.ui
+  qt_ui/vvDummyWindow.ui # For testing
+)
 
-if(vv_QT_VERSION VERSION_GREATER "4")
-  qt5_wrap_ui(vv_UI_CXX
-    qt_ui/vvHelpDialog.ui
-    qt_ui/vvDocumentation.ui
-    qt_ui/vvDicomSeriesSelector.ui
-    qt_ui/vvDummyWindow.ui #For testing
-    )
-else()
-  QT4_WRAP_UI(vv_UI_CXX
-    qt_ui/vvHelpDialog.ui
-    qt_ui/vvDocumentation.ui
-    qt_ui/vvDicomSeriesSelector.ui
-    qt_ui/vvDummyWindow.ui #For testing
-    )
-endif()
-
-if(vv_QT_VERSION VERSION_GREATER "4")
-  QT5_add_resources(vv_SRCS vvIcons.qrc)
-else()
-  QT4_ADD_RESOURCES(vv_SRCS vvIcons.qrc)
-endif()
+qt_add_resources(vv_SRCS vvIcons.qrc)
 
 # Add DICOM SERVER gui selector if the adequate GDCM is available
 if(CLITK_USE_PACS_CONNECTION)
@@ -198,19 +143,11 @@ if(CLITK_USE_PACS_CONNECTION)
 	vvPacsSettingsDialog.cxx
 	vvDicomServerQueryFactory.cxx
 	)
-  if(vv_QT_VERSION VERSION_GREATER "4")
-    qt5_wrap_cpp(vv_SRCS vvQPacsConnection.h
-      vvPacsSettingsDialog.h)
-    qt5_wrap_ui(vv_UI_CXX 
+  qt_wrap_cpp(vv_SRCS vvQPacsConnection.h
+    vvPacsSettingsDialog.h)
+  qt_wrap_ui(vv_UI_CXX 
 	  qt_ui/vvPacsConnection.ui
-      qt_ui/vvPacsSettingsDialog.ui)
-  else()
-    QT4_WRAP_CPP(vv_SRCS vvQPacsConnection.h
-      vvPacsSettingsDialog.h)
-    QT4_WRAP_UI(vv_UI_CXX 
-	  qt_ui/vvPacsConnection.ui
-      qt_ui/vvPacsSettingsDialog.ui)
-  endif()
+    qt_ui/vvPacsSettingsDialog.ui)
 endif(CLITK_USE_PACS_CONNECTION)
   
   # Add the autotools in the header vvToolsList.h for initialization of the dummy
@@ -227,91 +164,42 @@ endif(CLITK_USE_PACS_CONNECTION)
   # Add the autotools and the common files ui
   foreach(tool ${vv_TOOLS} ${vv_COMMON_WITH_UI})
       set(vv_SRCS ${vv_SRCS} ${tool}.cxx)
-      if(vv_QT_VERSION VERSION_GREATER "4")
-        QT5_WRAP_CPP(vv_SRCS ${tool}.h)
-        QT5_WRAP_UI(vv_UI_CXX qt_ui/${tool}.ui)
-      else()
-        QT4_WRAP_CPP(vv_SRCS ${tool}.h)
-        QT4_WRAP_UI(vv_UI_CXX qt_ui/${tool}.ui)
-      endif()
+      qt_wrap_cpp(vv_SRCS ${tool}.h)
+      qt_wrap_ui(vv_UI_CXX qt_ui/${tool}.ui)
   endforeach(tool)
 
   #Special case for Main Window with QVTKWidget according VTK version
   foreach(tool ${vv_TOOLS_VTK7} ${vv_COMMON_WITH_UI_VTK7})
       set(vv_SRCS ${vv_SRCS} ${tool}.cxx)
-      if(VTK_VERSION VERSION_LESS "8.2.0")
-        if(vv_QT_VERSION VERSION_GREATER "4")
-          QT5_WRAP_CPP(vv_SRCS ${tool}.h)
-          QT5_WRAP_UI(vv_UI_CXX qt_ui/${tool}VTK7.ui)
-        else()
-          QT4_WRAP_CPP(vv_SRCS ${tool}.h)
-          QT4_WRAP_UI(vv_UI_CXX qt_ui/${tool}VTK7.ui)
-        endif()
-      else()
-        if(vv_QT_VERSION VERSION_GREATER "4")
-          QT5_WRAP_CPP(vv_SRCS ${tool}.h)
-          QT5_WRAP_UI(vv_UI_CXX qt_ui/${tool}.ui)
-        else()
-          QT4_WRAP_CPP(vv_SRCS ${tool}.h)
-          QT4_WRAP_UI(vv_UI_CXX qt_ui/${tool}.ui)
-        endif()
-      endif()
+      qt_wrap_cpp(vv_SRCS ${tool}.h)
+      qt_wrap_ui(vv_UI_CXX qt_ui/${tool}.ui)
   endforeach(tool)
   
   # Add the common source files
   foreach(tool ${vv_COMMON})
-      set(vv_SRCS ${vv_SRCS} ${tool}.cxx)
-      if(vv_QT_VERSION VERSION_GREATER "4")
-        QT5_WRAP_CPP(vv_SRCS ${tool}.h)
-      else()
-        QT4_WRAP_CPP(vv_SRCS ${tool}.h)
-      endif()
+    set(vv_SRCS ${vv_SRCS} ${tool}.cxx)
+    qt_wrap_cpp(vv_SRCS ${tool}.h)
   endforeach(tool)
   
   # if Windows and Qt was built as a static lib then don't set QT_DLL flag
   set(QT_STATIC 0)
   if(WIN32)
-    if(vv_QT_VERSION VERSION_GREATER "4")
-      if(EXISTS ${Qt5Widgets_LIBRARIES}/QtCore.prl)
-        file(READ ${Qt5Widgets_LIBRARIES}/QtCore.prl QT_CORE_PRL)
-        if(${QT_CORE_PRL} MATCHES "static")
-          set(QT_STATIC 1)
-        endif(${QT_CORE_PRL} MATCHES "static")
-      endif(EXISTS ${Qt5Widgets_LIBRARIES}/QtCore.prl)
-    else()
-      if(EXISTS ${QT_LIBRARY_DIR}/QtCore.prl)
-        file(READ ${QT_LIBRARY_DIR}/QtCore.prl QT_CORE_PRL)
-        if(${QT_CORE_PRL} MATCHES "static")
-          set(QT_STATIC 1)
-        endif(${QT_CORE_PRL} MATCHES "static")
-      endif(EXISTS ${QT_LIBRARY_DIR}/QtCore.prl)
-    endif()
+    if(EXISTS ${Qt5Widgets_LIBRARIES}/QtCore.prl)
+      file(READ ${Qt5Widgets_LIBRARIES}/QtCore.prl QT_CORE_PRL)
+      if(${QT_CORE_PRL} MATCHES "static")
+        set(QT_STATIC 1)
+      endif(${QT_CORE_PRL} MATCHES "static")
+    endif(EXISTS ${Qt5Widgets_LIBRARIES}/QtCore.prl)
   endif(WIN32)
   if(NOT QT_STATIC)
     add_definitions(-DQT_DLL)
   endif(NOT QT_STATIC)
 
   add_definitions(-DQT_THREAD_SUPPORT)
-  if(vv_QT_VERSION VERSION_GREATER "4")
-    include_directories(
-      ${Qt5Widgets_INCLUDE_DIRS}
-      ${Qt5Gui_INCLUDE_DIRS}
-      ${Qt5Core_INCLUDE_DIRS}
-      ${Qt5Network_INCLUDE_DIRS}
-      ${Qt5Designer_INCLUDE_DIRS}
-      ${CMAKE_CURRENT_BINARY_DIR}
-      ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-  else()
-    include_directories(
-      ${QT_INCLUDES}
-      ${QT_INCLUDE_DIR}
-      ${QT_QTGUI_INCLUDE_DIR}
-      ${QT_QTCORE_INCLUDE_DIR}
-      ${CMAKE_CURRENT_BINARY_DIR}
-      ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-  endif()
+  include_directories(
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+  )
 #=========================================================
 
 #=========================================================
@@ -371,12 +259,7 @@ if(APPLE)
 endif()
 #=========================================================
 #Create binary and libs for tests
-if(vv_QT_VERSION VERSION_GREATER "4")
-set(vvExternalLibs clitkSegmentationGgoLib ${toolLibs} ${foundationLibraries} ${vvCxImage} Qt5::Widgets Qt5::Network Qt5::Designer ${APPLE_FRAMEWORKS})
-else()
 set(vvExternalLibs clitkSegmentationGgoLib ${toolLibs} ${foundationLibraries} ${vvCxImage} ${QT_LIBRARIES} ${APPLE_FRAMEWORKS})
-endif()
-# QtNetwork is required by vvRegisterForm ${QT_QTNETWORK_LIBRARY}
 
 #-----------------------------------------------------------------------------
 # For retina displays, see
@@ -444,7 +327,7 @@ else(WIN32)
   set(CPACK_SOURCE_GENERATOR "TGZ")
 endif(WIN32)
 include(CPack)
-#=========================================================
-#=========================================================
+# =========================================================
+# =========================================================
 configure_file(vvConfiguration.h.in vvConfiguration.h)
 #=========================================================

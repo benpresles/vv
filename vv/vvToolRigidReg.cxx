@@ -174,7 +174,7 @@ void vvToolRigidReg::apply()
 bool vvToolRigidReg::close()
 {
   QString warning = "Are you sure you want to reset the original transform?";
-  QMessageBox msgBox(QMessageBox::Warning, tr("Reset transform"),warning, 0, this);
+  QMessageBox msgBox(QMessageBox::Warning, tr("Reset transform"),warning, QMessageBox::NoButton, this);
   msgBox.addButton(tr("Yes"), QMessageBox::AcceptRole);
   msgBox.addButton(tr("No"), QMessageBox::RejectRole);
   if (msgBox.exec() == QMessageBox::AcceptRole) {
@@ -387,7 +387,7 @@ void vvToolRigidReg::SetTransform(vtkMatrix4x4 *matrix)
 #endif
   } catch (itk::ExceptionObject) {
     QString warning = "The matrice is a non-orthogonal rotation matrix.\nThe manual registration doesn't work.";
-    QMessageBox msgBox(QMessageBox::Warning, tr("Reset transform"),warning, 0, this);
+    QMessageBox msgBox(QMessageBox::Warning, tr("Reset transform"),warning, QMessageBox::NoButton, this);
     msgBox.addButton(tr("OK"), QMessageBox::AcceptRole);
     if (msgBox.exec() == QMessageBox::AcceptRole) {
         //SetTransform(mInitialMatrix);

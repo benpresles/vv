@@ -40,7 +40,7 @@ class vvToolSegmentation:
 {
   Q_OBJECT
     public:
-  vvToolSegmentation(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolSegmentation(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolSegmentation();
 
   //-----------------------------------------------------
