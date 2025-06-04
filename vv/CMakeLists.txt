@@ -279,6 +279,10 @@ else(WIN32)
   add_executable(vv vv.cxx)
 endif(WIN32)
 
+vtk_module_autoinit(
+  TARGETS vv
+  MODULES ${VTK_LIBRARIES}
+)
 target_link_libraries(vv vvLib)
 
 #=========================================================

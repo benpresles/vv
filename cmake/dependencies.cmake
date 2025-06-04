@@ -1,6 +1,43 @@
 #=========================================================
 # Find ITK (required)
-find_package(ITK 6.0 REQUIRED)
+find_package(ITK 6.0 REQUIRED COMPONENTS
+  ITKBinaryMathematicalMorphology
+  ITKCommon
+  ITKDICOMParser
+  ITKDistanceMap
+  ITKFFT
+  ITKIOBMP
+  ITKIOBioRad
+  ITKIOBruker
+  ITKIOGDCM
+  ITKIOGE
+  ITKIOGIPL
+  ITKIOHDF5
+  ITKIOImageBase
+  ITKIOJPEG
+  ITKIOJPEG2000
+  ITKIOLSM
+  ITKIOMINC
+  ITKIOMRC
+  ITKIOMeshBYU
+  ITKIOMeta
+  ITKIONIFTI
+  ITKIONRRD
+  ITKIOPNG
+  ITKIOStimulate
+  ITKIOTIFF
+  ITKIOVTK
+  ITKIOXML
+  ITKImageFeature
+  ITKImageIntensity
+  ITKLabelMap
+  ITKPDEDeformableRegistration
+  ITKRegionGrowing
+  ITKStatistics
+  ITKTransform
+  ITKVTK
+  RTK
+)
 include("${ITK_USE_FILE}")
 #=========================================================
 
@@ -36,6 +73,7 @@ find_package(VTK 9.5 REQUIRED COMPONENTS
   IOXML
   RenderingAnnotation
   RenderingContext2D
+  RenderingContextOpenGL2
   RenderingCore
   RenderingLOD
   RenderingOpenGL2
