@@ -1,0 +1,55 @@
+name: Build VV
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-14]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies for Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install -y cmake build-essential ninja-build
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+
+      - name: Set Qt environment for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo "CMAKE_PREFIX_PATH=C:/Qt/6.6.2/msvc2019_64" >> $env:GITHUB_ENV
+
+      - name: Set Qt environment
+        if: matrix.os == 'macos-14'
+        run: |
+          echo "CMAKE_PREFIX_PATH=${HOME}/Qt/6.6.2/macos-universal-clang" >> $GITHUB_ENV
+
+      - name: Build VTK
+        run: |
+          git clone --branch v9.5.0.rc2 --depth 1 https://gitlab.kitware.com/vtk/vtk.git vtk-src
+          cmake -S vtk-src -B vtk-build -GNinja -DCMAKE_BUILD_TYPE=Release -DVTK_MODULE_ENABLE_VTK_GUISupportQt=YES -DCMAKE_PREFIX_PATH="${{ env.CMAKE_PREFIX_PATH }}"
+          cmake --build vtk-build
+          echo "VTK_DIR=${{ github.workspace }}/build" >> $GITHUB_ENV
+          
+      - name: Build ITK
+        run: |
+          git clone --branch v6.0a03 --depth 1 https://github.com/InsightSoftwareConsortium/ITK.git itk-src
+          cmake -S itk-src -B itk-build -GNinja -DCMAKE_BUILD_TYPE=Release -DModule_ITKVtkGlue=ON -DModule_RTK=ON -DBUILD_TESTING=OFF -DVTK_DIR="${{ env.VTK_DIR }}" -DCMAKE_PREFIX_PATH="${{ env.CMAKE_PREFIX_PATH }}"
+          cmake --build itk-build
+          echo "ITK_DIR=${{ github.workspace }}/build" >> $GITHUB_ENV
+
+      - name: Build
+        run: |
+          cmake -S . -B vv-build -GNinja -DCMAKE_BUILD_TYPE=Release -DVTK_DIR="${{ env.VTK_DIR }}" -DITK_DIR="${{ env.ITK_DIR }}" -DCMAKE_PREFIX_PATH="${{ env.CMAKE_PREFIX_PATH }}"
+          cmake --build build
