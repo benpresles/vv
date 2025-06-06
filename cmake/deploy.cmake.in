@@ -1,0 +1,94 @@
+include("@QT_DEPLOY_SUPPORT@")
+
+set(plugin_list)
+set(plugin_dirs)
+# On Linux plugins are not automatically installed
+if("@CMAKE_SYSTEM_NAME@" STREQUAL "Linux")
+  set(prefix "@QT_INSTALL_PREFIX@")
+  cmake_path(GET prefix PARENT_PATH prefix)
+  cmake_path(GET prefix PARENT_PATH prefix)
+
+  foreach(plugin IN ITEMS
+      platforms
+      imageformats
+      xcbglintegrations
+    )
+    message(STATUS "Installing ${prefix}/plugins/${plugin}")
+    file(INSTALL
+      DESTINATION "${CMAKE_INSTALL_PREFIX}/plugins"
+      FILES "${prefix}/plugins/${plugin}"
+      USE_SOURCE_PERMISSIONS
+    )
+    file(GLOB _temp "${prefix}/plugins/${plugin}/*.so")
+    list(APPEND plugin_list ${_temp})
+    list(APPEND plugin_dirs "${CMAKE_INSTALL_PREFIX}/${prefix}/plugins/${plugin}")
+  endforeach()
+endif()
+
+# Deploy application runtime dependencies and runtime dependencies
+# of the found QML module plugins.
+qt_deploy_runtime_dependencies(
+    EXECUTABLE $<IF:$<PLATFORM_ID:Darwin>,$<TARGET_FILE_NAME:vv>.app,$<TARGET_FILE:vv>>
+    ADDITIONAL_EXECUTABLES
+      $<TARGET_FILE:VTK::GUISupportQt>
+      ${plugin_list}
+    BIN_DIR bin
+    LIB_DIR lib
+    PLUGINS_DIR $<IF:$<PLATFORM_ID:Linux>,plugins,bin>
+    QML_DIR bin/qml
+    NO_TRANSLATIONS
+)
+
+file(GET_RUNTIME_DEPENDENCIES
+  RESOLVED_DEPENDENCIES_VAR deps
+  EXECUTABLES
+    $<TARGET_FILE:vv>
+  PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" "qt[5|6]"
+  POST_EXCLUDE_REGEXES
+    # Windows exclusion list
+    ".*system32/.*"
+    "cublas.*"
+    "cudart.*"
+    "cufft.*"
+    # Linux exclusion list
+    "libc.so.*"      # standard C, C++ and system libraries
+    "libm.so.*"
+    "libpthread.so.*"
+    "libdl.so.*"
+    "librt.so.*"
+    "libstdc++.so.*"
+    "libgcc_s.so.*"
+    "ld-linux*.so.*"
+    "libX.*.so.*"    # X11 libraries
+    "libxcb.so.*"
+    "libGL.so.*"
+    "libEGL.so.*"
+    "libfontconfig.so.*" # common libraries found on system
+    "libfreetype.so.*"
+    "libdbus-1.so.*"
+    "libz.so.*"
+    "libpng*.so.*"
+    "libjpeg*.so.*"
+    "libudev.so.*"
+    "libwayland*.so.*"
+    "libselinux.so.*"
+    "libpcre.so.*"
+    "libexpat.so.*"
+  DIRECTORIES
+    $ENV{PATH} # for cuda
+    # VTK
+    @VTK_DIR@/bin
+    @VTK_DIR@/../../../bin
+    @VTK_DIR@/bin/$<CONFIG>
+    @VTK_DIR@/../../../bin/$<CONFIG>
+    # VTK
+    @ITK_DIR@/bin
+    @ITK_DIR@/../../../bin
+    @ITK_DIR@/bin/$<CONFIG>
+    @ITK_DIR@/../../../bin/$<CONFIG>
+  )
+
+file(INSTALL
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+  FILES ${deps}
+  )

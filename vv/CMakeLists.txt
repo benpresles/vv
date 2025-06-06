@@ -268,16 +268,18 @@ if(APPLE)
   set(vv_SRCS ${vv_SRCS} vvOSXHelper.mm)
 endif()
 
-add_library(vvLib ${vv_SRCS} ${vv_UI_CXX})
+add_library(vvLib STATIC ${vv_SRCS} ${vv_UI_CXX})
 target_link_libraries(vvLib ${vvExternalLibs})
 
 if(WIN32)
   add_executable(vv WIN32 vv.cxx vvIcon.rc)
 elseif(APPLE)
   add_executable(vv MACOSX_BUNDLE vv.cxx)
-else(WIN32)
+  set_target_properties(vv PROPERTIES INSTALL_RPATH "@rpath:@rpath/../lib")
+else()
   add_executable(vv vv.cxx)
-endif(WIN32)
+  set_target_properties(vv PROPERTIES INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib")
+endif()
 
 vtk_module_autoinit(
   TARGETS vv
@@ -288,6 +290,17 @@ target_link_libraries(vv vvLib)
 #=========================================================
 # Install options (also used by CPack)
 install(TARGETS vv DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+get_target_property(QT_INSTALL_PREFIX Qt6::Core LOCATION)
+configure_file("${CMAKE_SOURCE_DIR}/cmake/deploy.cmake.in"
+  "${CMAKE_BINARY_DIR}/cmake/deploy.cmake"
+  @ONLY
+)
+file(GENERATE
+  OUTPUT "${CMAKE_BINARY_DIR}/cmake/deploy-$<CONFIG>.cmake"
+  INPUT "${CMAKE_BINARY_DIR}/cmake/deploy.cmake"
+)
+install(SCRIPT "${CMAKE_BINARY_DIR}/cmake/deploy-$<CONFIG>.cmake")
 
 #=========================================================
 

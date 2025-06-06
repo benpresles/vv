@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 env:
-  VTK_TAG: "v9.5.0.rc2"
+  VTK_TAG: "v9.5.0"
   VTK_MODULES: >-
     -DVTK_GROUP_ENABLE_StandAlone=DONT_WANT
     -DVTK_GROUP_ENABLE_Rendering=DONT_WANT
@@ -49,13 +49,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-14]
+        os: [ubuntu-22.04, windows-latest, macos-14]
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Install dependencies for Ubuntu
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt update
           sudo apt install -y cmake build-essential ninja-build
@@ -94,3 +94,13 @@ jobs:
         run: |
           cmake -S . -B vv-build -GNinja -DCMAKE_BUILD_TYPE=Release -DVTK_DIR:PATH="${{ env.VTK_DIR }}" -DITK_DIR:PATH="${{ env.ITK_DIR }}" -DCMAKE_PREFIX_PATH="${{ env.CMAKE_PREFIX_PATH }}"
           cmake --build vv-build
+
+      - name: Package
+        run: |
+          cmake --build vv-build --target package
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vv-package-${{ matrix.os }}
+          path: vv-build/vv-*
