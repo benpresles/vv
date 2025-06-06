@@ -8,8 +8,39 @@ on:
 
 env:
   VTK_TAG: "v9.5.0.rc2"
+  VTK_MODULES: >-
+    -DVTK_GROUP_ENABLE_StandAlone=DONT_WANT
+    -DVTK_GROUP_ENABLE_Rendering=DONT_WANT
+    -DVTK_MODULE_ENABLE_VTK_ChartsCore=YES
+    -DVTK_MODULE_ENABLE_VTK_FiltersGeneral=YES
+    -DVTK_MODULE_ENABLE_VTK_FiltersHybrid=YES
+    -DVTK_MODULE_ENABLE_VTK_FiltersModeling=YES
+    -DVTK_MODULE_ENABLE_VTK_FiltersSources=YES
+    -DVTK_MODULE_ENABLE_VTK_GUISupportQt=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingColor=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingMorphological=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingStatistics=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingStencil=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingMath=YES
+    -DVTK_MODULE_ENABLE_VTK_InteractionImage=YES
+    -DVTK_MODULE_ENABLE_VTK_InteractionStyle=YES
+    -DVTK_MODULE_ENABLE_VTK_IOGeometry=YES
+    -DVTK_MODULE_ENABLE_VTK_IOImage=YES
+    -DVTK_MODULE_ENABLE_VTK_IOLegacy=YES
+    -DVTK_MODULE_ENABLE_VTK_IOMovie=YES
+    -DVTK_MODULE_ENABLE_VTK_IOXML=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingAnnotation=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingContext2D=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingLOD=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingOpenGL2=YES
+    -DVTK_MODULE_ENABLE_VTK_ViewsContext2D=YES
   VTK_DIR: "${{ github.workspace }}/vtk-build"
   ITK_TAG: "v6.0a03"
+  ITK_MODULES: >-
+    -DModule_ITKVtkGlue=ON
+    -DModule_RTK=ON
+
   ITK_DIR: "${{ github.workspace }}/itk-build"
 
 jobs:
@@ -50,13 +81,13 @@ jobs:
       - name: Build VTK
         run: |
           git clone --branch ${{ env.VTK_TAG }} --depth 1 https://gitlab.kitware.com/vtk/vtk.git vtk-src
-          cmake -S vtk-src -B "${{ env.VTK_DIR }}" -GNinja -DCMAKE_BUILD_TYPE=Release -DVTK_MODULE_ENABLE_VTK_GUISupportQt=YES -DCMAKE_PREFIX_PATH="${{ env.CMAKE_PREFIX_PATH }}"
+          cmake -S vtk-src -B "${{ env.VTK_DIR }}" -GNinja -DCMAKE_BUILD_TYPE=Release ${{ env.VTK_MODULES }} -DCMAKE_PREFIX_PATH="${{ env.CMAKE_PREFIX_PATH }}"
           cmake --build "${{ env.VTK_DIR }}"
           
       - name: Build ITK
         run: |
           git clone --branch ${{ env.ITK_TAG }} --depth 1 https://github.com/InsightSoftwareConsortium/ITK.git itk-src
-          cmake -S itk-src -B itk-build -GNinja -DCMAKE_BUILD_TYPE=Release -DModule_ITKVtkGlue=ON -DModule_RTK=ON -DBUILD_TESTING=OFF -DVTK_DIR:PATH="${{ env.VTK_DIR }}" -DCMAKE_PREFIX_PATH="${{ env.CMAKE_PREFIX_PATH }}"
+          cmake -S itk-src -B itk-build -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF ${{ env.ITK_MODULES }} -DVTK_DIR:PATH="${{ env.VTK_DIR }}" -DCMAKE_PREFIX_PATH="${{ env.CMAKE_PREFIX_PATH }}"
           cmake --build "${{ env.ITK_DIR }}"
 
       - name: Build
