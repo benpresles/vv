@@ -153,7 +153,12 @@ vvMainWindow::vvMainWindow():vvMainWindowBase()
   mCurrentPickedImageIndex = 0;
 
   //Init the contextMenu
-  this->setContextMenuPolicy(Qt::CustomContextMenu);
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  NOViewWidget->setContextMenuPolicy(Qt::PreventContextMenu);
+  NEViewWidget->setContextMenuPolicy(Qt::PreventContextMenu);
+  SOViewWidget->setContextMenuPolicy(Qt::PreventContextMenu);
+  SEViewWidget->setContextMenuPolicy(Qt::PreventContextMenu);
+
   contextActions.resize(0);
   QAction* actionOpen_new_image = contextMenu.addAction(QIcon(QString::fromUtf8(":/common/icons/fileopen.png")),
     tr("O&pen new Image"));
