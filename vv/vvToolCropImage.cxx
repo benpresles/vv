@@ -243,12 +243,13 @@ void vvToolCropImage::InputIsSelected(vvSlicerManager * slicer)
     spin_tmax->setValue(imsize[3]-1);
   }
 
-  QSignalMapper* signalMapper = new QSignalMapper(this);
-  connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(sliderValueChanged(int)));
-  for(unsigned int i=0; i<mSliders.size(); ++i){
-    signalMapper->setMapping(mSliders[i], i);
-    connect(mSliders[i], SIGNAL(valueChanged(int)), signalMapper, SLOT(map()));
+  for (unsigned int i = 0; i < mSliders.size(); ++i) {
+    connect(mSliders[i], &QSlider::valueChanged, this, [this, i](int)
+    {
+      sliderValueChanged(i);
+    });
   }
+
   UpdateExtent();
 }
 //------------------------------------------------------------------------------
