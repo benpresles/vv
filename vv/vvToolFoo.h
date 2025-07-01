@@ -17,11 +17,7 @@
 ===========================================================================**/
 #ifndef VVTOOLFOO_H
 #define VVTOOLFOO_H
-#if QT_VERSION >= 0x050000
-#include <QtUiPlugin/QDesignerExportWidget>
-#else
-#include <QtDesigner/QDesignerExportWidget>
-#endif
+
 #include <QDialog>
 
 #include "vvToolBase.h"

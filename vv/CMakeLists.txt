@@ -112,7 +112,7 @@ set(vv_SRCS
 
 # =========================================================
 # Qt related commands
-find_package(Qt6 REQUIRED COMPONENTS Widgets Network Designer)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Network)
 
 qt_wrap_cpp(vv_SRCS
   vvMainWindowBase.h
@@ -259,7 +259,7 @@ if(APPLE)
 endif()
 #=========================================================
 #Create binary and libs for tests
-set(vvExternalLibs clitkSegmentationGgoLib ${toolLibs} ${foundationLibraries} ${vvCxImage} Qt6::Widgets Qt6::Network Qt6::Designer ${APPLE_FRAMEWORKS})
+set(vvExternalLibs clitkSegmentationGgoLib ${toolLibs} ${foundationLibraries} ${vvCxImage} Qt6::Widgets Qt6::Network ${APPLE_FRAMEWORKS})
 
 #-----------------------------------------------------------------------------
 # For retina displays, see

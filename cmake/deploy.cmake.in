@@ -27,17 +27,19 @@ endif()
 
 # Deploy application runtime dependencies and runtime dependencies
 # of the found QML module plugins.
-qt_deploy_runtime_dependencies(
-    EXECUTABLE $<IF:$<PLATFORM_ID:Darwin>,$<TARGET_FILE_NAME:vv>.app,$<TARGET_FILE:vv>>
+if($<STREQUAL:$<TARGET_PROPERTY:Qt6::Core,TYPE>,SHARED_LIBRARY>)
+  qt_deploy_runtime_dependencies(
+    EXECUTABLE $<IF:$<PLATFORM_ID:Darwin>,$<TARGET_PROPERTY:vv,RUNTIME_OUTPUT_DIRECTORY>$<TARGET_FILE_NAME:vv>.app,$<TARGET_FILE:vv>>
     ADDITIONAL_EXECUTABLES
-      $<TARGET_FILE:VTK::GUISupportQt>
+      "$<$<STREQUAL:$<TARGET_PROPERTY:VTK::GUISupportQt,TYPE>,SHARED_LIBRARY>:$<TARGET_FILE:VTK::GUISupportQt>>"
       ${plugin_list}
     BIN_DIR bin
     LIB_DIR lib
     PLUGINS_DIR $<IF:$<PLATFORM_ID:Linux>,plugins,bin>
     QML_DIR bin/qml
     NO_TRANSLATIONS
-)
+  )
+endif()
 
 file(GET_RUNTIME_DEPENDENCIES
   RESOLVED_DEPENDENCIES_VAR deps

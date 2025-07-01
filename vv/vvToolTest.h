@@ -18,8 +18,6 @@
 #ifndef VVTOOLTEST_H
 #define VVTOOLTEST_H
 
-#include <QtUiPlugin/QDesignerExportWidget>
-
 #include "vvToolBase.h"
 #include "vvToolWidgetBase.h"
 #include "vvImageContour.h"

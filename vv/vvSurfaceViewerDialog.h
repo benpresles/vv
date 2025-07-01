@@ -28,11 +28,7 @@ class vtkPolyDataMapper;
 class vtkActor;
 class vtkOBJReader;
 
-#if QT_VERSION >= 0x050000
-#include <QtUiPlugin/QDesignerExportWidget>
-#else
-#include <QtDesigner/QDesignerExportWidget>
-#endif
+
 #include <QTreeWidget>
 
 //====================================================================
