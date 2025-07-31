@@ -20,8 +20,10 @@ It is distributed under dual licence
 #include <vtk_glad.h>
 #include <vtkOpenGLRenderWindow.h>
 #include <vtkOpenGLRenderer.h>
+#include <vtkOpenGLState.h>
 #include <vtkObjectFactory.h>
 
+#include <vtkRenderStepsPass.h>
 vtkStandardNewMacro(vvBlendImageActor);
 
 vvBlendImageActor::vvBlendImageActor()
@@ -37,9 +39,11 @@ void vvBlendImageActor::Render(vtkRenderer *ren)
 {
   //Change blending to maximum per component instead of weighted sum
   vtkOpenGLRenderWindow *renwin = dynamic_cast<vtkOpenGLRenderWindow*>(ren->GetRenderWindow());
-  const char *extensions = renwin->ReportCapabilities();
+  auto* state = renwin->GetState();
+  state->vtkglBlendEquation(GL_MAX);
   //Call normal render
   VTK_IMAGE_ACTOR::Render(ren);
+  state->vtkglBlendEquation(GL_FUNC_ADD);
 }
 
 void vvBlendImageActor::PrintSelf(ostream& os, vtkIndent indent)

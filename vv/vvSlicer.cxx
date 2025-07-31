@@ -59,6 +59,7 @@
 #include <vtkScalarBarActor.h>
 #include <vtkImageProperty.h>
 #include <vtkLookupTable.h>
+#include <vtkRenderStepsPass.h>
 
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
@@ -158,6 +159,8 @@ vvSlicer::vvSlicer()
   showFusionLegend = false;
 
   this->InstallPipeline();
+
+  this->GetRenderer()->UseOITOff();
 
   mLinkOverlayWindowLevel = true;
   mImageVisibility = true;
