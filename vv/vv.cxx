@@ -149,6 +149,7 @@ int main( int argc, char** argv )
   std::string win(""), lev("");
 
   int first_of_wl_set = -1;
+  bool early_quit = false;
   bool new_wl_set = false;
 	bool link_images = false;
   if (argc >1) {
@@ -191,7 +192,8 @@ int main( int argc, char** argv )
                     //<< "--roi file     \t Overlay binary mask images. Option may be repeated on a single base image." << std::endl
                     << "--contour file \t Overlay DICOM RT-STRUCT contours." << std::endl
                     << "--landmarks [--sequence] file(s)  \t Overlay the landmarks in file(s) (.txt or .pts)." << std::endl;
-          exit(0);
+          early_quit = true;
+          break;
         } else if (current=="--vf") {
           if (!n_image_loaded) load_image_first_error();
           open_mode = O_VF;
@@ -295,10 +297,10 @@ int main( int argc, char** argv )
     }
   }
 
-//   if(win!="" && lev!="") {
-//     window.SetWindowLevel(atof(win.c_str()), atof(lev.c_str()));
-//     window.ApplyWindowLevelToAllImages();
-//   }
+  if(early_quit) // when calling for help
+  {
+    return 0;
+  }
 
   if (link_images)
     window.LinkAllImages();
