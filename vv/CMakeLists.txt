@@ -78,6 +78,7 @@ set(vv_SRCS
   vvQProgressDialogITKCommand.cxx
   vvQDicomSeriesSelector.cxx
   QTreePushButton.cxx
+  QVTKOpenGLNativeWidget2.cxx
   vvMainWindowBase.cxx
   vvImageWarp.cxx
   vvDeformableRegistration.cxx
@@ -117,6 +118,7 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Network)
 qt_wrap_cpp(vv_SRCS
   vvMainWindowBase.h
   QTreePushButton.h
+  QVTKOpenGLNativeWidget2.h
   vvDocumentation.h
   vvHelpDialog.h
   vvQDicomSeriesSelector.h
