@@ -96,7 +96,6 @@ void open_sequence(vvMainWindow &window,
     std::cerr << "Sequences are not managed for opening " << open_mode_names[open_mode] << std::endl;
     exit(1);
   }
-
   // Reset
   sequence_filenames.clear();
   parse_mode=P_NORMAL;
@@ -157,7 +156,10 @@ int main( int argc, char** argv )
       std::string current = argv[i];
       if (!current.compare(0,1,"-")) { // && !current.compare(0,2,"--")) { //We are parsing an option
         if (parse_mode == P_SEQUENCE) {//First finish the current sequence
-          open_sequence(window, open_mode, parse_mode, sequence_filenames, n_image_loaded);
+          QTimer::singleShot(100, &window, [&]()
+          {
+            open_sequence(window, open_mode, parse_mode, sequence_filenames, n_image_loaded);
+          });
         } 
         else if (parse_mode == P_WINDOW) { // handle negative window values
           win=current;
@@ -293,7 +295,10 @@ int main( int argc, char** argv )
       }
     }
     if (parse_mode == P_SEQUENCE) { //Finish any current sequence
-      open_sequence(window, open_mode, parse_mode, sequence_filenames, n_image_loaded);
+      QTimer::singleShot(100, &window, [&]()
+      {
+        open_sequence(window, open_mode, parse_mode, sequence_filenames, n_image_loaded);
+      });
     }
   }
 
