@@ -45,6 +45,7 @@ env:
     -DVTK_MODULE_ENABLE_VTK_RenderingOpenGL2=YES
     -DVTK_MODULE_ENABLE_VTK_ViewsContext2D=YES
     -DVTK_MODULE_USE_EXTERNAL_VTK_freetype=ON
+    -DVTK_SMP_IMPLEMENTATION_TYPE=STDThread
   VTK_DIR: "${{ github.workspace }}/vtk-build"
   ITK_TAG: "v6.0a03"
   ITK_MODULES: >-
