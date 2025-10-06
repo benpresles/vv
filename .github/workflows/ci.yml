@@ -11,6 +11,8 @@ env:
   COMMON_CMAKE_OPTIONS: "-GNinja -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_PREFIX_PATH:PATH=${{ github.workspace }}/install"
   FREETYPE_TAG: VER-2-13-3
   FREETYPE_DIR: "${{ github.workspace }}/freetype-build"
+  LIBJPEG_TAG: 3.1.2
+  LIBJPEG_DIR: "${{ github.workspace }}/libjpeg-build"
   QT_TAG: 6.9
   QT_DIR: "${{ github.workspace }}/qt-build"
   QT_OPTIONS: >-
@@ -59,7 +61,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-latest, macos-14]
+        os: [ubuntu-22.04, windows-2022, macos-14]
 
     steps:
       - uses: actions/checkout@v4
@@ -98,9 +100,17 @@ jobs:
             libxrender-dev
 
       - name: Setup Windows
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2022'
         run: |
           echo "QT_OPTIONS=@QT_OPTIONS@ -DFEATURE_system_freetype=ON" >> $GITHUB_ENV
+
+      - name: Setup Ubuntu
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          echo "QT_OPTIONS=$QT_OPTIONS -DFEATURE_system_jpeg=ON" >> $GITHUB_ENV
+          echo "VTK_OPTIONS=$VTK_OPTIONS -DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON" >> $GITHUB_ENV
+          echo "ITK_MODULES=$ITK_MODULES -DITK_USE_SYSTEM_JPEG=ON" >> $GITHUB_ENV
+          echo "COMMON_CMAKE_OPTIONS=$COMMON_CMAKE_OPTIONS -DJPEG_LIBRARY_RELEASE=${{ github.workspace }}/install/lib64/libjpeg.a -DJPEG_INCLUDE_DIR=${{ github.workspace }}/install/include" >> $GITHUB_ENV
 
       - name: Setup MacOS
         if: matrix.os == 'macos-14'
@@ -119,6 +129,14 @@ jobs:
           cmake -S freetype-src -B "${{ env.FREETYPE_DIR }}" ${{ env.COMMON_CMAKE_OPTIONS }}
           cmake --build "${{ env.FREETYPE_DIR }}"
           cmake --install "${{ env.FREETYPE_DIR }}" --prefix "${{ env.INSTALL_PREFIX }}"
+
+      - name: Build libjpeg
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          git clone --branch ${{ env.LIBJPEG_TAG }} --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git libjpeg-src
+          cmake -S libjpeg-src -B "${{ env.LIBJPEG_DIR }}" -DENABLE_SHARED=OFF ${{ env.COMMON_CMAKE_OPTIONS }}
+          cmake --build "${{ env.LIBJPEG_DIR }}"
+          cmake --install "${{ env.LIBJPEG_DIR }}" --prefix "${{ env.INSTALL_PREFIX }}"
 
       - name: Build Qt6
         run: |
