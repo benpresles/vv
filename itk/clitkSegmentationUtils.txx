@@ -1429,13 +1429,14 @@ namespace clitk {
     typedef itk::ChangeInformationImageFilter< ImageType > InfoFilterType; 
     typename InfoFilterType::Pointer indexChangeFilter = InfoFilterType::New(); 
     indexChangeFilter->ChangeRegionOn(); 
-    // The next line is commented because not exist in itk 3
-    // typename InfoFilterType::OutputImageOffsetValueType indexShift[3];
-    long indexShift[3];
+    typename InfoFilterType::OutputImageOffsetValueType indexShift[3];
     typename ImageType::IndexType index = input->GetLargestPossibleRegion().GetIndex();
+
     for(uint i=0;i<ImageType::ImageDimension; i++)
       indexShift[i] = (index[i]<0 ? -index[i]:0);
+
     typename ImageType::PointType origin;
+
     for(uint i=0;i<ImageType::ImageDimension; i++)
     origin[i] = input->GetOrigin()[i] - indexShift[i]*input->GetSpacing()[i];
     indexChangeFilter->SetOutputOffset( indexShift ); 

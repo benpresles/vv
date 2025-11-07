@@ -1,13 +1,14 @@
 
 # Attempt to find gengetopt. If not found, compile it.
-find_program(GENGETOPT gengetopt)
-if(GENGETOPT STREQUAL "GENGETOPT-NOTFOUND")
-  get_filename_component(CLITK_CMAKE_DIR ${CMAKE_CURRENT_LIST_FILE} PATH)
-  add_subdirectory(${CLITK_CMAKE_DIR}/../utilities/gengetopt ${CMAKE_CURRENT_BINARY_DIR}/gengetopt)
-else(GENGETOPT STREQUAL "GENGETOPT-NOTFOUND")
-  add_executable(gengetopt IMPORTED)
-  set_property(TARGET gengetopt PROPERTY IMPORTED_LOCATION ${GENGETOPT})
-endif(GENGETOPT STREQUAL "GENGETOPT-NOTFOUND")
+find_program(GENGETOPT_EXECUTABLE gengetopt
+  PATHS
+    "${ITK_RUNTIME_LIBRARY_DIRS}"
+    "${ITK_RUNTIME_LIBRARY_DIRS}/../bin"
+  REQUIRED
+)
+
+add_executable(gengetopt IMPORTED)
+set_property(TARGET gengetopt PROPERTY IMPORTED_LOCATION ${GENGETOPT_EXECUTABLE})
 
 macro(WRAP_GGO GGO_SRCS)
   foreach(GGO_FILE ${ARGN})

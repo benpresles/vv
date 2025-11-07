@@ -44,7 +44,6 @@
 #include <vtkImageData.h>
 #include <vtkImageActor.h>
 #include <vvBlendImageActor.h>
-#include <vtkToolkits.h>
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <vtkDataArray.h>
@@ -60,6 +59,7 @@
 #include <vtkScalarBarActor.h>
 #include <vtkImageProperty.h>
 #include <vtkLookupTable.h>
+#include <vtkRenderStepsPass.h>
 
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
@@ -159,6 +159,8 @@ vvSlicer::vvSlicer()
   showFusionLegend = false;
 
   this->InstallPipeline();
+
+  this->GetRenderer()->UseOITOff();
 
   mLinkOverlayWindowLevel = true;
   mImageVisibility = true;
@@ -1759,14 +1761,11 @@ void vvSlicer::Render()
     crossCursor->Update();
   }
 #else
-    vtkSmartPointer<vtkOpenGLImageSliceMapper> mapperOpenGL= vtkSmartPointer<vtkOpenGLImageSliceMapper>::New();
-    try {
-        mapperOpenGL = dynamic_cast<vtkOpenGLImageSliceMapper*>(GetImageActor()->GetMapper());
-    } catch (const std::bad_cast& e) {
-		std::cerr << e.what() << std::endl;
-		std::cerr << "Conversion error" << std::endl;
-		return;
-	}
+    auto* mapperOpenGL = vtkImageSliceMapper::SafeDownCast(GetImageActor()->GetMapper());
+    if(!mapperOpenGL) {
+	    std::cerr << "Conversion error" << std::endl;
+	    return;
+	  }
 
     if (xCursor >= mapperOpenGL->GetCroppingRegion()[0]-0.5 &&
         xCursor < mapperOpenGL->GetCroppingRegion()[1]+0.5 &&
@@ -1877,7 +1876,7 @@ void vvSlicer::DisplayLandmarks()
 	  double *position = mLandClipper->GetOutput()->GetPoint(id);
       vtkStdString label = static_cast<vtkStringArray*>(mLandClipper->GetOutput()->GetPointData()->GetAbstractArray("labels"))->GetValue(id);
       vtkSmartPointer<vtkCaptionActor2D> label_actor = vtkSmartPointer<vtkCaptionActor2D>::New();
-      label_actor->SetCaption(label);
+      label_actor->SetCaption(label.c_str());
       label_actor->SetAttachmentPoint(position);
       label_actor->GetCaptionTextProperty()->SetColor(1,0,0);
       label_actor->GetCaptionTextProperty()->SetOrientation(33.333333);

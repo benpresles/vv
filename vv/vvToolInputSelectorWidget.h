@@ -20,11 +20,7 @@
 
 // qt
 #include <QObject>
-#if QT_VERSION >= 0x050000
-#include <QtUiPlugin/QDesignerExportWidget>
-#else
-#include <QtDesigner/QDesignerExportWidget>
-#endif
+
 #include <QDialog>
 
 // vv
@@ -38,7 +34,7 @@ class vvToolInputSelectorWidget: public QWidget, private Ui::vvToolInputSelector
 {
   Q_OBJECT
     public:
-  vvToolInputSelectorWidget(QWidget * parent=0, Qt::WindowFlags f=0);
+  vvToolInputSelectorWidget(QWidget * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolInputSelectorWidget() {}
   
   void AddInputSelector(QString & s, const std::vector<vvSlicerManager*> & l, int index, bool allowSkip=false);  

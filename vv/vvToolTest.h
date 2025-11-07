@@ -18,8 +18,6 @@
 #ifndef VVTOOLTEST_H
 #define VVTOOLTEST_H
 
-#include <QtUiPlugin/QDesignerExportWidget>
-
 #include "vvToolBase.h"
 #include "vvToolWidgetBase.h"
 #include "vvImageContour.h"
@@ -34,7 +32,7 @@ class vvToolTest:
 {
   Q_OBJECT
     public:
-  vvToolTest(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolTest(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolTest();
 
   //-----------------------------------------------------

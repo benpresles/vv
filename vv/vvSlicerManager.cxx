@@ -446,34 +446,21 @@ void vvSlicerManager::SetInteractorStyleNavigator(int i, vtkInteractorStyle* sty
   vvSlicerManagerCommand *smc = vvSlicerManagerCommand::New();
   smc->SM = this;
   smc->SetSlicerNumber(i);
+
   mSlicers[i]->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
 
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::KeyPressEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::EndWindowLevelEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::StartWindowLevelEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::PickEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::StartPickEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::LeaveEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::UserEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelForwardEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelBackwardEvent, smc);
-  // mSlicers[i]->GetRenderWindow()->GetInteractor()->
-  //   GetInteractorStyle()->AddObserver(vtkCommand::LeftButtonReleaseEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::EndPickEvent, smc);
-  mSlicers[i]->GetRenderWindow()->GetInteractor()->
-    GetInteractorStyle()->AddObserver(vtkCommand::EndInteractionEvent, smc);
+  style->AddObserver(vtkCommand::KeyPressEvent, smc);
+  style->AddObserver(vtkCommand::WindowLevelEvent, smc);
+  style->AddObserver(vtkCommand::EndWindowLevelEvent, smc);
+  style->AddObserver(vtkCommand::StartWindowLevelEvent, smc);
+  style->AddObserver(vtkCommand::PickEvent, smc);
+  style->AddObserver(vtkCommand::StartPickEvent, smc);
+  style->AddObserver(vtkCommand::LeaveEvent, smc);
+  style->AddObserver(vtkCommand::UserEvent, smc);
+  style->AddObserver(vtkCommand::MouseWheelForwardEvent, smc);
+  style->AddObserver(vtkCommand::MouseWheelBackwardEvent, smc);
+  style->AddObserver(vtkCommand::EndPickEvent, smc);
+  style->AddObserver(vtkCommand::EndInteractionEvent, smc);
   smc->Delete();
 }
 //----------------------------------------------------------------------------

@@ -46,11 +46,7 @@
   #define VVTOOLMedianFilter_H
 
   #include <QtGlobal>
-#if QT_VERSION >= 0x050000
-  #include <QtUiPlugin/QDesignerExportWidget>
-#else
-  #include <QtDesigner/QDesignerExportWidget>
-#endif
+
   #include "vvToolBase.h"
   #include "QWidget"
   #include "vvToolWidgetBase.h"
@@ -67,7 +63,7 @@
   {
       Q_OBJECT	
   public:
-      vvToolMedianFilter(vvMainWindowBase* parent=0, Qt::WindowFlags f=0);
+      vvToolMedianFilter(vvMainWindowBase* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
       ~vvToolMedianFilter();
 
       static void Initialize();

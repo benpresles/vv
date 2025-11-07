@@ -110,7 +110,7 @@ void vvOverlayPanel::getVFName(QString name)
 
 void vvOverlayPanel::setVFProperty()
 {
-  QColor color(vfColorButton->palette().color(QPalette::Background));
+  QColor color(vfColorButton->palette().color(QPalette::Base));
   emit VFPropertyUpdated(subSamplingSpinBox->value(),
                          scaleSpinBox->value(),
                          lutCheckBox->checkState(),
@@ -319,9 +319,9 @@ void vvOverlayPanel::updateFusionSequenceSliderValueFromWindow(int val, bool upd
 
 void vvOverlayPanel::VFColorChangeRequest()
 {
-  QColor color(vfColorButton->palette().color(QPalette::Background));
+  QColor color(vfColorButton->palette().color(QPalette::Base));
   color = QColorDialog::getColor(color, this, "Choose the new color of the vector field");
-  //vfColorButton->palette().setColor(QPalette::Background, color); SR: Not working?
+  //vfColorButton->palette().setColor(QPalette::Base, color); SR: Not working?
   if (color.isValid())
     vfColorButton->setStyleSheet("* { background-color: " + color.name() + "; border: 0px }");
   this->setVFProperty();

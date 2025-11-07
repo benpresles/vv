@@ -17,11 +17,7 @@
 ===========================================================================**/
 #ifndef VVTOOLFOO_H
 #define VVTOOLFOO_H
-#if QT_VERSION >= 0x050000
-#include <QtUiPlugin/QDesignerExportWidget>
-#else
-#include <QtDesigner/QDesignerExportWidget>
-#endif
+
 
 #include "vvToolBase.h"
 #include "vvToolWidgetBase.h"
@@ -35,7 +31,7 @@ class vvToolFooWithWidgetBase:
 {
   Q_OBJECT
     public:
-  vvToolFooWithWidgetBase(vvMainWindowBase* parent=0, Qt::WindowFlags f=0);
+  vvToolFooWithWidgetBase(vvMainWindowBase* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolFooWithWidgetBase();
 
   static void Initialize();

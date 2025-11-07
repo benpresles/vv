@@ -18,11 +18,7 @@
 #ifndef VVTOOLPLASTIMATCH_H
 #define VVTOOLPLASTIMATCH_H
 
-#if QT_VERSION >= 0x050000
-#include <QtUiPlugin/QDesignerExportWidget>
-#else
-#include <QtDesigner/QDesignerExportWidget>
-#endif
+
 
 #include "vvToolBase.h"
 #include "vvToolWidgetBase.h"
@@ -39,7 +35,7 @@ class vvToolPlastimatch:
 {
   Q_OBJECT
     public:
-  vvToolPlastimatch(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolPlastimatch(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolPlastimatch();
 
   //-----------------------------------------------------

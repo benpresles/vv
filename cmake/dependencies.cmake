@@ -1,43 +1,85 @@
 #=========================================================
 # Find ITK (required)
-find_package(ITK)
-if(ITK_FOUND)
-  include("${ITK_USE_FILE}")
-  if(ITK_VERSION VERSION_GREATER 5.0.0 OR ITK_VERSION VERSION_EQUAL 5.0.0)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  endif(ITK_VERSION VERSION_GREATER 5.0.0 OR ITK_VERSION VERSION_EQUAL 5.0.0)
-else(ITK_FOUND)
-  message(FATAL_ERROR "Cannot build without ITK.  Please set ITK_DIR.")
-endif(ITK_FOUND)
+find_package(ITK 6.0 REQUIRED COMPONENTS
+  ITKBinaryMathematicalMorphology
+  ITKCommon
+  ITKDICOMParser
+  ITKDistanceMap
+  ITKFFT
+  ITKIOBMP
+  ITKIOBioRad
+  ITKIOBruker
+  ITKIOGDCM
+  ITKIOGE
+  ITKIOGIPL
+  ITKIOHDF5
+  ITKIOImageBase
+  ITKIOJPEG
+  ITKIOJPEG2000
+  ITKIOLSM
+  ITKIOMINC
+  ITKIOMRC
+  ITKIOMeshBYU
+  ITKIOMeta
+  ITKIONIFTI
+  ITKIONRRD
+  ITKIOPNG
+  ITKIOStimulate
+  ITKIOTIFF
+  ITKIOVTK
+  ITKIOXML
+  ITKImageFeature
+  ITKImageIntensity
+  ITKLabelMap
+  ITKPDEDeformableRegistration
+  ITKRegionGrowing
+  ITKStatistics
+  ITKTransform
+  ITKVTK
+  RTK
+)
+include("${ITK_USE_FILE}")
 #=========================================================
 
 #=========================================================
 # Find VTK (required)
-find_package(VTK REQUIRED)
-if(VTK_FOUND)
-  include("${VTK_USE_FILE}")
-  if(VTK_VERSION VERSION_LESS 5.8.0)
-    set( VTK_LIBRARIES
-      vtkCommon
-      vtkRendering
-      vtkIO
-      vtkFiltering
-      vtkGraphics
-      vtkWidgets
-      vtkImaging
-      vtkHybrid
-      )
-  endif(VTK_VERSION VERSION_LESS 5.8.0)
-  if(VTK_VERSION VERSION_LESS 5.6.0)
-    set( VTK_LIBRARIES
-      ${VTK_LIBRARIES}
-      vtkQVTK
-    )
-  endif(VTK_VERSION VERSION_LESS 5.6.0)
-else(VTK_FOUND)
-  message(FATAL_ERROR "Please set VTK_DIR.")
-endif(VTK_FOUND)
-#=========================================================
+find_package(VTK 9.5 REQUIRED COMPONENTS
+  ChartsCore
+  CommonCore
+  CommonDataModel
+  CommonExecutionModel
+  CommonMath
+  CommonMisc
+  CommonTransforms
+  FiltersCore
+  FiltersGeneral
+  FiltersHybrid
+  FiltersModeling
+  FiltersSources
+  GUISupportQt
+  ImagingColor
+  ImagingCore
+  ImagingMath
+  ImagingMorphological
+  ImagingStatistics
+  ImagingStencil
+  InteractionImage
+  InteractionStyle
+  IOCore
+  IOGeometry
+  IOImage
+  IOLegacy
+  IOMovie
+  IOXML
+  RenderingAnnotation
+  RenderingContext2D
+  RenderingContextOpenGL2
+  RenderingCore
+  RenderingLOD
+  RenderingOpenGL2
+  ViewsContext2D
+)
+#========================================================
 
 #=========================================================
 # Find gengetopt, will create a target exe if not found

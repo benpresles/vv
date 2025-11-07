@@ -28,11 +28,7 @@ class vtkPolyDataMapper;
 class vtkActor;
 class vtkOBJReader;
 
-#if QT_VERSION >= 0x050000
-#include <QtUiPlugin/QDesignerExportWidget>
-#else
-#include <QtDesigner/QDesignerExportWidget>
-#endif
+
 #include <QTreeWidget>
 
 //====================================================================
@@ -42,7 +38,7 @@ class vvSurfaceViewerDialog : public QDialog, private Ui::vvSurfaceViewerDialog 
 
 public:
     // constructor - destructor
-    vvSurfaceViewerDialog(QWidget * parent=0, Qt::WindowFlags f=0);
+    vvSurfaceViewerDialog(QWidget * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
     ~vvSurfaceViewerDialog();
     void NextTime();
     void PreviousTime();

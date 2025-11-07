@@ -26,7 +26,7 @@ class vvToolConvert: public QObject, public vvToolBase<vvToolConvert>
 {
   Q_OBJECT
     public:
-  vvToolConvert(vvMainWindowBase* parent, Qt::WindowFlags f=0);
+  vvToolConvert(vvMainWindowBase* parent, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolConvert();
 
   static void Initialize();

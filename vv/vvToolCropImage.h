@@ -20,11 +20,7 @@
 
 //qt
 #include <QtGlobal>
-#if QT_VERSION >= 0x050000
-#include <QtUiPlugin/QDesignerExportWidget>
-#else
-#include <QtDesigner/QDesignerExportWidget>
-#endif
+
 #include <QDialog>
 #include <QSlider>
 // vv
@@ -43,7 +39,7 @@ class vvToolCropImage:
 {
   Q_OBJECT
     public:
-  vvToolCropImage(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolCropImage(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
   ~vvToolCropImage();
 
   virtual void InputIsSelected(vvSlicerManager *m);

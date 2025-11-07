@@ -3,7 +3,7 @@
 
   Authors belong to: 
   - University of LYON              http://www.universite-lyon.fr/
-  - Léon Bérard cancer center       http://www.centreleonberard.fr
+  - Lï¿½on Bï¿½rard cancer center       http://www.centreleonberard.fr
   - CREATIS CNRS laboratory         http://www.creatis.insa-lyon.fr
 
   This software is distributed WITHOUT ANY WARRANTY; without even
@@ -35,11 +35,11 @@ class vvBlendImageActor : public VTK_IMAGE_ACTOR
 public:
   static vvBlendImageActor *New();
   vtkTypeMacro(vvBlendImageActor, VTK_IMAGE_ACTOR);
-  virtual void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+  virtual void PrintSelf(ostream& os, vtkIndent indent) override;
 
   // Description:
   // Implement base class method.
-  void Render(vtkRenderer *ren) VTK_OVERRIDE;
+  void Render(vtkRenderer *ren) override;
 
 protected:
   vvBlendImageActor();

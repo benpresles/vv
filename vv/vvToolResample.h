@@ -31,11 +31,7 @@
 #include "vvToolBase.h"
 
 // qt
-#if QT_VERSION >= 0x050000
-#include <QtUiPlugin/QDesignerExportWidget>
-#else
-#include <QtDesigner/QDesignerExportWidget>
-#endif
+
 #include <QTreeWidget>
 
 //------------------------------------------------------------------------------
@@ -48,7 +44,7 @@ class vvToolResample :
     
   public:
   // constructor - destructor
-  vvToolResample(vvMainWindowBase * parent=0, Qt::WindowFlags f=0);
+  vvToolResample(vvMainWindowBase * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags{});
 
   // Get output result
   vvImage::Pointer GetOutput() {

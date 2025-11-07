@@ -94,8 +94,8 @@ vvToolHistogram::vvToolHistogram(vvMainWindowBase * parent, Qt::WindowFlags f)
   chart->SetRenderEmpty(true);
   mView->GetScene()->AddItem(chart);
   mView->GetRenderer()->SetBackground(1.0, 1.0, 1.0);
-  this->HistogramWidget->GetRenderWindow()->GetRenderers()->RemoveAllItems();
-  this->HistogramWidget->GetRenderWindow()->AddRenderer(mView->GetRenderer());
+  HistogramWidget->renderWindow()->GetRenderers()->RemoveAllItems();
+  HistogramWidget->renderWindow()->AddRenderer(mView->GetRenderer());
   HistogramWidget->show();
 
 #ifdef Q_OS_OSX
@@ -166,33 +166,23 @@ void vvToolHistogram::computeHistogram()
 //------------------------------------------------------------------------------
 void vvToolHistogram::displayHistogram()
 {
-    if (!mCurrentSlicerManager) close();
+    if (!mCurrentSlicerManager)
+      close();
     HistogramWidget->hide();
-
 
     vtkSmartPointer<vtkChartXY> chart = vtkSmartPointer<vtkChartXY>::New();
     chart->SetAutoSize(true);
     mView->GetScene()->ClearItems();
     mView->GetScene()->AddItem(chart);
     vtkPlot *line = chart->AddPlot(vtkChart::LINE);
-#if VTK_MAJOR_VERSION <= 5
-    line->SetInput(mTable, 0, 1);
-#else
     line->SetInputData(mTable, 0, 1);
-#endif
     line->SetColor(0, 255, 0, 255);
     line->SetWidth(1.0);
 
-
     vtkPlot *upperWindowLine = chart->AddPlot(vtkChart::LINE);
     vtkPlot *lowerWindowLine = chart->AddPlot(vtkChart::LINE);
-#if VTK_MAJOR_VERSION <= 5
-    upperWindowLine->SetInput(mTableWindowLevel, 0, 2);
-    lowerWindowLine->SetInput(mTableWindowLevel, 1, 2);
-#else
     upperWindowLine->SetInputData(mTableWindowLevel, 0, 2);
     lowerWindowLine->SetInputData(mTableWindowLevel, 1, 2);
-#endif
     upperWindowLine->SetColor(255, 0, 0, 255);
     lowerWindowLine->SetColor(255, 0, 0, 255);
     upperWindowLine->SetWidth(1.0);
@@ -201,8 +191,9 @@ void vvToolHistogram::displayHistogram()
     chart->GetAxis(vtkAxis::LEFT)->SetTitle("#Voxels");
     chart->GetAxis(vtkAxis::BOTTOM)->SetTitle("Intensity");
 
-    this->HistogramWidget->GetRenderWindow()->GetRenderers()->RemoveAllItems();
-    this->HistogramWidget->GetRenderWindow()->AddRenderer(mView->GetRenderer());
+    HistogramWidget->renderWindow()->GetRenderers()->RemoveAllItems();
+    HistogramWidget->renderWindow()->AddRenderer(mView->GetRenderer());
+    HistogramWidget->renderWindow()->Render(); // force render once to initialize renderer
     HistogramWidget->show();
 
     QApplication::restoreOverrideCursor();
@@ -300,10 +291,11 @@ void vvToolHistogram::InputIsSelected(vvSlicerManager * m)
   // Connect signals & slots
   vvToolHistogramCommand *smc = vvToolHistogramCommand::New();
   smc->mHist = this;
-  HistogramWidget->GetRenderWindow()->GetInteractor()->GetInteractorStyle()->AddObserver(vtkCommand::LeftButtonPressEvent, smc);
-  HistogramWidget->GetRenderWindow()->GetInteractor()->GetInteractorStyle()->AddObserver(vtkCommand::MouseMoveEvent, smc);
-  HistogramWidget->GetRenderWindow()->GetInteractor()->GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelForwardEvent, smc);
-  HistogramWidget->GetRenderWindow()->GetInteractor()->GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelBackwardEvent, smc);
+  auto* style = HistogramWidget->renderWindow()->GetInteractor()->GetInteractorStyle();
+  style->AddObserver(vtkCommand::LeftButtonPressEvent, smc);
+  style->AddObserver(vtkCommand::MouseMoveEvent, smc);
+  style->AddObserver(vtkCommand::MouseWheelForwardEvent, smc);
+  style->AddObserver(vtkCommand::MouseWheelBackwardEvent, smc);
   smc->Delete();
 
 }

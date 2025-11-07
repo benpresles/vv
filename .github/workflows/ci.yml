@@ -1,0 +1,176 @@
+name: Build VV
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  INSTALL_PREFIX: "${{ github.workspace }}/install"
+  COMMON_CMAKE_OPTIONS: "-GNinja -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_PREFIX_PATH:PATH=${{ github.workspace }}/install"
+  FREETYPE_TAG: VER-2-13-3
+  FREETYPE_DIR: "${{ github.workspace }}/freetype-build"
+  LIBJPEG_TAG: 3.1.2
+  LIBJPEG_DIR: "${{ github.workspace }}/libjpeg-build"
+  QT_TAG: 6.9
+  QT_DIR: "${{ github.workspace }}/qt-build"
+  QT_OPTIONS: >-
+    -DFEATURE_static=ON
+    -DFEATURE_shared=OFF
+  VTK_TAG: "v9.5.0"
+  VTK_OPTIONS: >-
+    -DVTK_GROUP_ENABLE_StandAlone=DONT_WANT
+    -DVTK_GROUP_ENABLE_Rendering=DONT_WANT
+    -DVTK_MODULE_ENABLE_VTK_ChartsCore=YES
+    -DVTK_MODULE_ENABLE_VTK_FiltersGeneral=YES
+    -DVTK_MODULE_ENABLE_VTK_FiltersHybrid=YES
+    -DVTK_MODULE_ENABLE_VTK_FiltersModeling=YES
+    -DVTK_MODULE_ENABLE_VTK_FiltersSources=YES
+    -DVTK_MODULE_ENABLE_VTK_GUISupportQt=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingColor=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingMorphological=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingStatistics=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingStencil=YES
+    -DVTK_MODULE_ENABLE_VTK_ImagingMath=YES
+    -DVTK_MODULE_ENABLE_VTK_InteractionImage=YES
+    -DVTK_MODULE_ENABLE_VTK_InteractionStyle=YES
+    -DVTK_MODULE_ENABLE_VTK_IOGeometry=YES
+    -DVTK_MODULE_ENABLE_VTK_IOImage=YES
+    -DVTK_MODULE_ENABLE_VTK_IOLegacy=YES
+    -DVTK_MODULE_ENABLE_VTK_IOMovie=YES
+    -DVTK_MODULE_ENABLE_VTK_IOXML=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingAnnotation=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingContext2D=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingLOD=YES
+    -DVTK_MODULE_ENABLE_VTK_RenderingOpenGL2=YES
+    -DVTK_MODULE_ENABLE_VTK_ViewsContext2D=YES
+    -DVTK_MODULE_USE_EXTERNAL_VTK_freetype=ON
+    -DVTK_SMP_IMPLEMENTATION_TYPE=STDThread
+  VTK_DIR: "${{ github.workspace }}/vtk-build"
+  ITK_TAG: "v6.0a03"
+  ITK_MODULES: >-
+    -DModule_ITKVtkGlue=ON
+    -DModule_RTK=ON
+  ITK_DIR: "${{ github.workspace }}/itk-build"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-14]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Ubuntu
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            cmake \
+            build-essential \
+            ninja-build \
+            libopengl-dev \
+            libgtk-3-dev \
+            libx11-dev \
+            libx11-xcb-dev \
+            libxcb-cursor-dev \
+            libxcb-glx0-dev \
+            libxcb-icccm4-dev \
+            libxcb-image0-dev \
+            libxcb-keysyms1-dev \
+            libxcb-randr0-dev \
+            libxcb-render-util0-dev \
+            libxcb-shape0-dev \
+            libxcb-shm0-dev \
+            libxcb-sync-dev \
+            libxcb-util-dev \
+            libxcb-xfixes0-dev \
+            libxcb-xkb-dev \
+            libxcb1-dev \
+            libxext-dev \
+            libxfixes-dev \
+            libxi-dev \
+            libxkbcommon-dev \
+            libxkbcommon-x11-dev \
+            libxrender-dev
+
+      - name: Setup Windows
+        if: matrix.os == 'windows-2022'
+        run: |
+          echo "QT_OPTIONS=@QT_OPTIONS@ -DFEATURE_system_freetype=ON" >> $GITHUB_ENV
+
+      - name: Setup Ubuntu
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          echo "QT_OPTIONS=$QT_OPTIONS -DFEATURE_system_jpeg=ON" >> $GITHUB_ENV
+          echo "VTK_OPTIONS=$VTK_OPTIONS -DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON" >> $GITHUB_ENV
+          echo "ITK_MODULES=$ITK_MODULES -DITK_USE_SYSTEM_JPEG=ON" >> $GITHUB_ENV
+          echo "COMMON_CMAKE_OPTIONS=$COMMON_CMAKE_OPTIONS -DJPEG_LIBRARY_RELEASE=${{ github.workspace }}/install/lib64/libjpeg.a -DJPEG_INCLUDE_DIR=${{ github.workspace }}/install/include" >> $GITHUB_ENV
+
+      - name: Setup MacOS
+        if: matrix.os == 'macos-14'
+        run: |
+          echo "QT_OPTIONS=$QT_OPTIONS -DFEATURE_system_freetype=ON" >> $GITHUB_ENV
+
+      - name: Configure build for amd64
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+
+      - name: Build Freetype
+        if: matrix.os != 'ubuntu-22.04'
+        run: |
+          git clone --branch ${{ env.FREETYPE_TAG }} --depth 1 https://github.com/freetype/freetype.git freetype-src
+          cmake -S freetype-src -B "${{ env.FREETYPE_DIR }}" ${{ env.COMMON_CMAKE_OPTIONS }}
+          cmake --build "${{ env.FREETYPE_DIR }}"
+          cmake --install "${{ env.FREETYPE_DIR }}" --prefix "${{ env.INSTALL_PREFIX }}"
+
+      - name: Build libjpeg
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          git clone --branch ${{ env.LIBJPEG_TAG }} --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git libjpeg-src
+          cmake -S libjpeg-src -B "${{ env.LIBJPEG_DIR }}" -DENABLE_SHARED=OFF ${{ env.COMMON_CMAKE_OPTIONS }}
+          cmake --build "${{ env.LIBJPEG_DIR }}"
+          cmake --install "${{ env.LIBJPEG_DIR }}" --prefix "${{ env.INSTALL_PREFIX }}"
+
+      - name: Build Qt6
+        run: |
+          git clone --branch ${{ env.QT_TAG }} --depth 1 https://github.com/qt/qtbase.git qtbase-src
+          cmake -S qtbase-src -B "${{ env.QT_DIR }}"  ${{ env.COMMON_CMAKE_OPTIONS }} ${{ env.QT_OPTIONS }}
+          cmake --build "${{ env.QT_DIR }}"
+          cmake --install "${{ env.QT_DIR }}" --prefix "${{ env.INSTALL_PREFIX }}"
+
+      - name: Build VTK
+        run: |
+          git clone --branch ${{ env.VTK_TAG }} --depth 1 https://gitlab.kitware.com/vtk/vtk.git vtk-src
+          cmake -S vtk-src -B "${{ env.VTK_DIR }}" ${{ env.COMMON_CMAKE_OPTIONS }} ${{ env.VTK_OPTIONS }}
+          cmake --build "${{ env.VTK_DIR }}"
+          cmake --install "${{ env.VTK_DIR }}" --prefix "${{ env.INSTALL_PREFIX }}"
+          
+      - name: Build ITK
+        run: |
+          git clone --branch ${{ env.ITK_TAG }} --depth 1 https://github.com/InsightSoftwareConsortium/ITK.git itk-src
+          cmake -S itk-src -B itk-build ${{ env.COMMON_CMAKE_OPTIONS }} -DBUILD_TESTING=OFF ${{ env.ITK_MODULES }}
+          cmake --build "${{ env.ITK_DIR }}"
+        # Not installed because ITKInternalEigen3.cmake is not correctly installed https://github.com/InsightSoftwareConsortium/ITK/issues/4407
+        # Should be fixed, but isn't?
+
+      - name: Build
+        run: |
+          cmake -S . -B vv-build ${{ env.COMMON_CMAKE_OPTIONS }} -DITK_DIR:PATH="${{ env.ITK_DIR }}"
+          cmake --build vv-build
+
+      - name: Package
+        run: |
+          cmake --build vv-build --target package
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vv-package-${{ matrix.os }}
+          path: vv-build/vv-*
