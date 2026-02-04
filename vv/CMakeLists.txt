@@ -113,7 +113,7 @@ set(vv_SRCS
 
 # =========================================================
 # Qt related commands
-find_package(Qt6 REQUIRED COMPONENTS Widgets Network)
+find_package(Qt6 REQUIRED COMPONENTS Widgets OpenGL Network)
 
 qt_wrap_cpp(vv_SRCS
   vvMainWindowBase.h
