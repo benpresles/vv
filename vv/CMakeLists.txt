@@ -261,7 +261,7 @@ if(APPLE)
 endif()
 #=========================================================
 #Create binary and libs for tests
-set(vvExternalLibs clitkSegmentationGgoLib ${toolLibs} ${foundationLibraries} ${vvCxImage} Qt6::Widgets Qt6::OpenGL Qt6::OpenGLWidgets Qt6::Network ${APPLE_FRAMEWORKS})
+set(vvExternalLibs clitkSegmentationGgoLib ${toolLibs} ${foundationLibraries} ${vvCxImage} Qt6::Widgets Qt6::OpenGL Qt6::OpenGLWidgets Qt6::Network VTK::GUISupportQt ${APPLE_FRAMEWORKS})
 
 #-----------------------------------------------------------------------------
 # For retina displays, see
